@@ -80,4 +80,6 @@ Need to be the focus when getting problem after installation
 
 
 Within Saiku you might have multiple schemas, A schema in its raw form is nothing but an XML document.schema is a collection of single or multiple cubes. A cube can also contain shared dimensions, named sets, roles, measures and declarations of user-defined functions.
+  
+  [Please click here for more details](https://cracklogic.com/saiku-analytics-tutorial-2017/)
 
