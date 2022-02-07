@@ -1,0 +1,361 @@
+<?xml version='1.0'?>
+<Schema name='Example' metamodelVersion='4.0'>
+
+ 
+<PhysicalSchema>
+        <Table name='time_by_day'>
+            <Key>
+                <Column name='time_id'/>
+            </Key>
+        </Table>
+		
+		<Table name='BORROWER'>
+            <Key>
+                <Column name='BORROWER_ID'/>
+            </Key>
+        </Table>
+		
+		<Table name='INDUSTRY_TYPE'>
+            <Key>
+                <Column name='INDUSTRY_TYPE_ID'/>
+            </Key>
+        </Table>
+		
+		<Table name='EXPOSURE_DIMENSION'>
+            <Key>
+                <Column name='EXPOSURE_ID'/>
+            </Key>
+        </Table>
+		
+		<Table name='FACILITY_NO'>
+            <Key>
+                <Column name='ASSES_ID'/>
+            </Key>
+        </Table>
+		<Table name='FACILITY'>
+            <Key>
+                <Column name='FACILITY_ID'/>
+            </Key>
+        </Table>
+		  <Link target='FACILITY_NO' source='FACILITY'>
+            <ForeignKey>
+                <Column name='FACILITY_ID'/>
+            </ForeignKey>
+          </Link>
+		
+		<Table name='SECURITY_NO'>
+            <Key>
+                <Column name='ASSES_SECURITY_ID'/>
+            </Key>
+        </Table>
+		<Table name='SECURITY'>
+            <Key>
+                <Column name='SECURITY_ID'/>
+            </Key>
+        </Table>
+		 <Link target='SECURITY_NO' source='SECURITY'>
+            <ForeignKey>
+                <Column name='SECURITY_ID'/>
+            </ForeignKey>
+         </Link>
+		 
+		<Table name='EXPOSURES_F'/>
+		<Table name='AGG_BE_SPECIAL_EXPOSURES_F'/>
+        <Table name='AGG_BFE_EXPOSURES_F'/>
+        <Table name='AGG_BIE_EXPOSURES_F'/>
+		<Table name='SECURITYAMT_F'/>
+		<Table name='AGG_BIS_SECURITYAMT_F'/>
+		<Table name='AGG_BFS_SECURITYAMT_F'/>
+</PhysicalSchema>
+
+
+	<Dimension name='Time' table='time_by_day' type='TIME' key='Time Id'>
+        <Attributes>
+            <Attribute name='Year' keyColumn='the_year' levelType='TimeYears' hasHierarchy='false'></Attribute>
+            <Attribute name='Quarter' levelType='TimeQuarters' hasHierarchy='false'>
+                <Key>
+                    <Column name='the_year'/>
+                    <Column name='quarter'/>
+                </Key>
+                <Name>
+                    <Column name='quarter'/>
+                </Name>
+            </Attribute>
+            <Attribute name='Month' levelType='TimeMonths' hasHierarchy='false'>
+                <Key>
+                    <Column name='the_year'/>
+                    <Column name='month_of_year'/>
+                </Key>
+                <Name>
+                    <Column name='month_of_year'/>
+                </Name>
+            </Attribute>
+            <Attribute name='Week' levelType='TimeWeeks' hasHierarchy='false'>
+                <Key>
+                    <Column name='the_year'/>
+                    <Column name='week_of_year'/>
+                </Key>
+                <Name>
+                    <Column name='week_of_year'/>
+                </Name>
+            </Attribute>
+            <Attribute name='Day' levelType='TimeDays' hasHierarchy='false'>
+                <Key>
+                    <Column name='time_id'/>
+                </Key>
+                <Name>
+                    <Column name='day_of_month'/>
+                </Name>
+                <OrderBy>
+                    <Column name='time_id'/>
+                </OrderBy>
+            </Attribute>
+            <Attribute name='Month Name' hasHierarchy='false'>
+                <Key>
+                    <Column name='the_year'/>
+                    <Column name='month_of_year'/>
+                </Key>
+                <Name>
+                    <Column name='the_month'/>
+                </Name>
+            </Attribute>
+            <Attribute name='Date' keyColumn='the_date' hasHierarchy='false'/>
+            <Attribute name='Date String' keyColumn='date_string' hasHierarchy='false'/>
+            <Attribute name='Time Id' keyColumn='time_id' hasHierarchy='false'/>
+        </Attributes>
+
+        <Hierarchies>
+            <Hierarchy name='Time' hasAll='false'>
+                <Level attribute='Year'>
+                    <Annotations><Annotation name="AnalyzerDateFormat">[yyyy]</Annotation></Annotations>
+                </Level>
+                <Level attribute='Quarter'>
+                    <Annotations><Annotation name="AnalyzerDateFormat">[yyyy].[Qq]</Annotation></Annotations>
+                </Level>
+                <Level attribute='Month'>
+                    <Annotations><Annotation name="AnalyzerDateFormat">[yyyy].[Qq].[mm]</Annotation></Annotations>
+                </Level>
+            </Hierarchy>
+            <Hierarchy name='Weekly' hasAll='true'>
+                <Level attribute='Year'>
+                    <Annotations><Annotation name="AnalyzerDateFormat">[yyyy]</Annotation></Annotations>
+                </Level>
+                <Level attribute='Week'>
+                    <Annotations><Annotation name="AnalyzerDateFormat">[yyyy].[ww]</Annotation></Annotations>
+                </Level>
+                <Level attribute='Day'>
+                    <Annotations><Annotation name="AnalyzerDateFormat">[yyyy].[ww].[dd]</Annotation></Annotations>
+                </Level>
+            </Hierarchy>
+            <Hierarchy name='Date Only' hasAll='true'>
+                <Level attribute='Date String'>
+                    <Annotations><Annotation name="SaikuDayFormatString">yyyy/mm/dd</Annotation></Annotations>
+                </Level>
+            </Hierarchy>
+        </Hierarchies>
+    </Dimension>
+
+	
+	<Dimension name='Borrower' table='BORROWER' key='Borrower Id'>
+                <Attributes>
+					<Attribute name='Borrower group' table='BORROWER' keyColumn='BORROWER_GROUP_NAME' hasHierarchy='false'/>
+                    <Attribute name='Borrower Name' table='BORROWER' keyColumn='BORROWER_NAME' hasHierarchy='false'/>
+					<Attribute name='Borrower Id' table='BORROWER' keyColumn='BORROWER_ID' hasHierarchy='false'/>
+				</Attributes>
+				
+				<Hierarchies>
+                    <Hierarchy name='Borrowers' allMemberName='All Borrowers'>
+						<Level attribute='Borrower group'/>
+                        <Level attribute='Borrower Name'/>
+					</Hierarchy>                    
+                </Hierarchies>
+    </Dimension>
+	
+	
+	<Dimension name='Facility' table='FACILITY' key='Asses Id'>
+                <Attributes>
+					<Attribute name='Facility Type' table='FACILITY' keyColumn='FACILITY_TYPE_NAME' hasHierarchy='false'/>
+					<Attribute name='Facility Name' table='FACILITY' keyColumn='FACILITY_NAME'  hasHierarchy='false'/>
+					<Attribute name='Facility No' table='FACILITY_NO' keyColumn='FACILITY_NO'  hasHierarchy='false'/>
+					<Attribute name='Asses Id' table='FACILITY_NO' keyColumn='ASSES_ID' hasHierarchy='false'/>
+				</Attributes>
+
+                <Hierarchies>
+                    <Hierarchy name='Facility' allMemberName='All Facility'>
+						<Level attribute='Facility Type'/>
+						<Level attribute='Facility Name'/>
+						<Level attribute='Facility No'/>
+					</Hierarchy>                    
+                </Hierarchies>
+     </Dimension>
+	 
+	 
+	 <Dimension name='Security' table='SECURITY' key='Asses Security Id'>
+                <Attributes>
+					<Attribute name='Security Type' table='SECURITY' keyColumn='SECURITY_TYPE_NAME' hasHierarchy='false'/>
+					<Attribute name='Security Name' table='SECURITY' keyColumn='SECURITY_NAME'  hasHierarchy='false'/>
+					<Attribute name='Security No' table='SECURITY_NO' keyColumn='SECURITY_NO'  hasHierarchy='false'/>
+					<Attribute name='Asses Security Id' table='SECURITY_NO' keyColumn='ASSES_SECURITY_ID' hasHierarchy='false'/>
+				</Attributes>
+
+                <Hierarchies>
+                    <Hierarchy name='Security' allMemberName='All Security'>
+						<Level attribute='Security Type'/>
+						<Level attribute='Security Name'/>
+						<Level attribute='Security No'/>
+					</Hierarchy>                    
+                </Hierarchies>
+     </Dimension>
+	 
+	 <Dimension name='Exposures' table='EXPOSURE_DIMENSION' key='Exposure Id'>
+                <Attributes>
+					<Attribute name='Exposure Amount' table='EXPOSURE_DIMENSION' keyColumn='EXPOSURES_AMT' hasHierarchy='false'/>
+					<Attribute name='Exposure Id' table='EXPOSURE_DIMENSION' keyColumn='EXPOSURE_ID' hasHierarchy='false'/>
+				</Attributes>
+
+                <Hierarchies>
+                    <Hierarchy name='Security' allMemberName='All Security'>
+						<Level attribute='Exposure Amount'/>
+					</Hierarchy>                    
+                </Hierarchies>
+     </Dimension>
+       
+
+
+	<Cube name='Exposures' defaultMeasure='Exposure Amount'>
+    
+	<Dimensions>
+
+            <Dimension source='Time'/>
+			
+			<Dimension source='Borrower'/>
+
+            <Dimension source='Facility'/>
+			
+			<Dimension source='Security'/>
+			
+			<Dimension source='Exposures'/>
+			
+			<Dimension name='Industry Type' table='INDUSTRY_TYPE' key='Industry Type Id'>
+                <Attributes>
+                    <Attribute name='Industry Type Id' keyColumn='INDUSTRY_TYPE_ID' hasHierarchy='false'/>
+                    <Attribute name='Industry Type' keyColumn='INDUSTRY_TYPE' hasHierarchy='false'/>
+                </Attributes>
+                <Hierarchies>
+                    <Hierarchy name='Industry Types' allMemberName='All Industry Types'>
+                        <Level attribute='Industry Type'/>
+                    </Hierarchy>
+                </Hierarchies>
+            </Dimension>
+    </Dimensions>
+		
+		<MeasureGroups>
+            <MeasureGroup name='Exposures' table='EXPOSURES_F'>
+                <Measures>
+                    <Measure name='Exposure Amount' column='EXPOSURES_AMT' aggregator='sum' formatString='Standard'/>
+                </Measures>
+                <DimensionLinks>
+                    <ForeignKeyLink dimension='Time' foreignKeyColumn='time_id'/>
+                    <ForeignKeyLink dimension='Industry Type' foreignKeyColumn='INDUSTRY_TYPE_ID'/>
+					<ForeignKeyLink dimension='Borrower' foreignKeyColumn='BORROWER_ID'/>
+					<ForeignKeyLink dimension='Facility' foreignKeyColumn='ASSES_ID'/>
+					<ForeignKeyLink dimension='Exposures' foreignKeyColumn='EXPOSURE_ID'/>
+					<NoLink dimension='Security'/>
+				</DimensionLinks>
+            </MeasureGroup>
+			
+			<MeasureGroup table='AGG_BE_SPECIAL_EXPOSURES_F' type='aggregate'>
+                <Measures>
+                   <MeasureRef name='Exposure Amount' aggColumn='EXPOSURES_SUM'/>
+                </Measures>
+                <DimensionLinks>
+                    <ForeignKeyLink dimension='Borrower' foreignKeyColumn='BORROWER_ID'/>
+                    <CopyLink dimension='Time' attribute='Quarter'>
+                        <Column aggColumn='YEAR' table='time_by_day' name='the_year'/>
+                        <Column aggColumn='QUARTER' table='time_by_day' name='quarter'/>
+                    </CopyLink>
+					<NoLink dimension='Facility'/>
+					<NoLink dimension='Industry Type'/>
+					<NoLink dimension='Security'/>
+					<NoLink dimension='Exposures'/>
+                </DimensionLinks>
+            </MeasureGroup>
+			
+			<MeasureGroup table='AGG_BFE_EXPOSURES_F' type='aggregate'>
+                <Measures>
+                   <MeasureRef name='Exposure Amount' aggColumn='EXPOSURES_SUM'/>
+                </Measures>
+                <DimensionLinks>
+                    <ForeignKeyLink dimension='Borrower' foreignKeyColumn='BORROWER_ID'/>
+                    <ForeignKeyLink dimension='Facility' foreignKeyColumn='FACILITY_ID'/>
+                    <NoLink dimension='Time'/>
+					<NoLink dimension='Industry Type'/>
+					<NoLink dimension='Security'/>
+					<NoLink dimension='Exposures'/>
+                </DimensionLinks>
+            </MeasureGroup>
+			
+			<MeasureGroup table='AGG_BIE_EXPOSURES_F' type='aggregate'>
+                <Measures>
+                   <MeasureRef name='Exposure Amount' aggColumn='EXPOSURES_SUM'/>
+                </Measures>
+                <DimensionLinks>
+                    <ForeignKeyLink dimension='Borrower' foreignKeyColumn='BORROWER_ID'/>
+                    <ForeignKeyLink dimension='Industry Type' foreignKeyColumn='INDUSTRY_TYPE_ID'/>
+                    <NoLink dimension='Time'/>
+					<NoLink dimension='Facility'/>
+					<NoLink dimension='Security'/>
+					<NoLink dimension='Exposures'/>
+                </DimensionLinks>
+            </MeasureGroup>
+			
+			
+			
+			
+			
+			<MeasureGroup name='Security' table='SECURITYAMT_F'>
+                <Measures>
+                    <Measure name='Security Amount' column='SECURITY_AMT' aggregator='sum' formatString='Standard'/>
+                </Measures>
+                <DimensionLinks>
+                    <ForeignKeyLink dimension='Industry Type' foreignKeyColumn='INDUSTRY_TYPE_ID'/>
+					<ForeignKeyLink dimension='Borrower' foreignKeyColumn='BORROWER_ID'/>
+					<ForeignKeyLink dimension='Security' foreignKeyColumn='ASSES_SECURITY_ID'/>
+					<ForeignKeyLink dimension='Facility' foreignKeyColumn='ASSES_ID'/>
+					<ForeignKeyLink dimension='Exposures' foreignKeyColumn='EXPOSURE_ID'/>
+					<NoLink dimension='Time'/>
+				</DimensionLinks>
+            </MeasureGroup>
+			
+			<MeasureGroup table='AGG_BFS_SECURITYAMT_F' type='aggregate'>
+                <Measures>
+                   <MeasureRef name='Security Amount' aggColumn='SECURITYAMT_SUM'/>
+                </Measures>
+                <DimensionLinks>
+                    <ForeignKeyLink dimension='Borrower' foreignKeyColumn='BORROWER_ID'/>
+                    <ForeignKeyLink dimension='Facility' foreignKeyColumn='FACILITY_ID'/>
+                    <NoLink dimension='Time'/>
+					<NoLink dimension='Industry Type'/>
+					<NoLink dimension='Security'/>
+					<NoLink dimension='Exposures'/>
+                </DimensionLinks>
+            </MeasureGroup>
+			
+			<MeasureGroup table='AGG_BIS_SECURITYAMT_F' type='aggregate'>
+                <Measures>
+                   <MeasureRef name='Security Amount' aggColumn='SECURITYAMT_SUM'/>
+                </Measures>
+                <DimensionLinks>
+                    <ForeignKeyLink dimension='Borrower' foreignKeyColumn='BORROWER_ID'/>
+                    <ForeignKeyLink dimension='Industry Type' foreignKeyColumn='INDUSTRY_TYPE_ID'/>
+                    <NoLink dimension='Time'/>
+					<NoLink dimension='Facility'/>
+					<NoLink dimension='Security'/>
+					<NoLink dimension='Exposures'/>
+                </DimensionLinks>
+            </MeasureGroup>
+			
+        </MeasureGroups>
+	</Cube>
+
+</Schema>
